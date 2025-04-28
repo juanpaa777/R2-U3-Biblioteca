@@ -1,0 +1,109 @@
+/* Contenedor principal */
+.home-container { width: 100%; overflow-x: hidden; }
+  
+  /* Hero (Video) */
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6);
+  }
+  
+  .hero-content {
+    position: relative;
+    text-align: center;
+    color: white;
+    z-index: 2;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .hero-content p {
+    font-size: 1.5rem;
+  }
+  
+  /* Sección eventos */
+  .eventos-section {
+    padding: 60px 30px;
+    background: #f9f9f9;
+    text-align: center;
+  }
+  
+  .eventos-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #111827;
+  }
+  
+  /* Grid de tarjetas */
+  .eventos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+  
+  .event-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 1s ease forwards;
+    opacity: 0;
+  }
+  
+  .event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .event-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #1e40af;
+  }
+  
+  .event-card p {
+    color: #6b7280;
+    font-size: 1rem;
+  }
+  
+  /* Animación de aparición */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .evento-imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 15px;
+  }
+  :host ::ng-deep .main-content {
+    padding-top: 0 !important;
+  }
+  

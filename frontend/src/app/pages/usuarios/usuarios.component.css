@@ -1,0 +1,200 @@
+/* CONTENEDOR PRINCIPAL */
+.usuarios-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #111827; /* gris muy oscuro */
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  color: #e5e7eb; /* gris claro */
+}
+
+/* TÍTULOS */
+h2, h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+/* FORMULARIO */
+.formulario {
+  background: #0a0a0a; /* fondo negro */
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+/* Grilla de inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  background: #1f2937; /* gris oscuro */
+  color: white;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: #ffe600; /* acento amarillo PolarPro */
+  outline: none;
+}
+
+/* BOTONES PRINCIPALES */
+button {
+  margin: 5px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botones importantes */
+.btn-registrar,
+.btn-cerrar,
+.btn-abrir-modal {
+  background: #ffe600;
+  color: #111827;
+}
+
+.btn-registrar:hover,
+.btn-cerrar:hover,
+.btn-abrir-modal:hover {
+  background: #ffd000;
+}
+
+/* Botones de acciones discretas */
+.btn-ver,
+.btn-editar,
+.btn-eliminar,
+.btn-guardar,
+.btn-cancelar {
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+}
+
+.btn-ver:hover,
+.btn-editar:hover,
+.btn-eliminar:hover,
+.btn-guardar:hover,
+.btn-cancelar:hover {
+  background: #374151;
+}
+
+/* TABLA */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: #0a0a0a;
+  color: #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+th, td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #374151;
+  text-align: center;
+}
+
+th {
+  background: #111827;
+  color: #d1d5db;
+  text-transform: uppercase;
+}
+
+/* Efecto hover en tabla */
+tr:hover {
+  background-color: #1f2937;
+}
+
+/* MENSAJE */
+.mensaje {
+  background: #0a0a0a;
+  color: #ffe600;
+  padding: 12px;
+  margin-top: 20px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background: #0a0a0a;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+.modal-contenido p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #e5e7eb;
+}
+
+/* BUSCADOR */
+.buscador-flotante {
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+.buscador-flotante input {
+  width: 100%;
+  padding: 12px;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  border-radius: 50px;
+  font-size: 1rem;
+}
+
+/* RESULTADOS DEL BUSCADOR */
+.resultados-sugerencias,
+.no-resultados {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 10px;
+  color: #e5e7eb;
+  text-align: center;
+}
+
+.sugerencia:hover {
+  background: #374151;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

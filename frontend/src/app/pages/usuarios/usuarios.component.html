@@ -1,0 +1,120 @@
+<div class="usuarios-container">
+  <h2>Gestión de Usuarios</h2>
+
+  <!-- Botón para abrir el modal de registro -->
+  <div class="registro-usuario-container">
+    <button class="btn-abrir-modal" (click)="abrirModalRegistro()">Registrar Usuario</button>
+  </div>
+
+  <!-- Modal de Registro -->
+  <div class="modal" *ngIf="mostrarModalRegistro" (click)="cerrarModalRegistro()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <h3>Registrar Nuevo Usuario</h3>
+
+      <form (ngSubmit)="registrarUsuario()" class="formulario">
+        <div class="form-grid">
+          <input type="text" placeholder="Matrícula" [(ngModel)]="nuevoUsuario.matricula" name="matricula" required>
+          <input type="text" placeholder="Nombre" [(ngModel)]="nuevoUsuario.nombre" name="nombre" required>
+          <input type="text" placeholder="Apellido" [(ngModel)]="nuevoUsuario.apellido" name="apellido" required>
+          <input type="email" placeholder="Correo" [(ngModel)]="nuevoUsuario.correo" name="correo" required>
+          <input type="text" placeholder="Teléfono" [(ngModel)]="nuevoUsuario.telefono" name="telefono">
+        </div>
+        <button type="submit" class="btn-registrar">Guardar Usuario</button>
+      </form>
+
+      <button class="btn-cerrar" (click)="cerrarModalRegistro()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Mensaje global -->
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+  <h3>Lista de Usuarios</h3>
+
+  <!-- Buscador flotante -->
+  <div class="buscador-flotante">
+    <input 
+      type="text" 
+      [(ngModel)]="terminoBusqueda"
+      (input)="filtrarUsuarios()"
+      placeholder="Buscar usuarios..."
+    >
+    <div class="resultados-sugerencias" *ngIf="terminoBusqueda && usuariosFiltrados.length > 0">
+      <div class="sugerencia" *ngFor="let usuario of usuariosFiltrados" (click)="seleccionarDesdeBusqueda(usuario)">
+        <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong> — {{ usuario.matricula }}
+      </div>
+    </div>
+    <div class="no-resultados" *ngIf="terminoBusqueda && usuariosFiltrados.length === 0">
+      No se encontraron usuarios.
+    </div>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <table *ngIf="usuariosAnimados.length > 0; else sinUsuarios">
+    <thead>
+      <tr>
+        <th>Matrícula</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuariosAnimados" [class.fade-in]="usuario.fade">
+        <td *ngIf="editandoUsuario?._id !== usuario._id">{{ usuario.matricula }}</td>
+        <td *ngIf="editandoUsuario?._id !== usuario._id">{{ usuario.nombre }}</td>
+        <td *ngIf="editandoUsuario?._id !== usuario._id">{{ usuario.apellido }}</td>
+        <td *ngIf="editandoUsuario?._id !== usuario._id">{{ usuario.correo }}</td>
+        <td *ngIf="editandoUsuario?._id !== usuario._id">{{ usuario.telefono }}</td>
+
+        <ng-container *ngIf="editandoUsuario?._id === usuario._id">
+          <td><input [(ngModel)]="editandoUsuario.matricula" name="matriculaEdit"></td>
+          <td><input [(ngModel)]="editandoUsuario.nombre" name="nombreEdit"></td>
+          <td><input [(ngModel)]="editandoUsuario.apellido" name="apellidoEdit"></td>
+          <td><input [(ngModel)]="editandoUsuario.correo" name="correoEdit"></td>
+          <td><input [(ngModel)]="editandoUsuario.telefono" name="telefonoEdit"></td>
+        </ng-container>
+
+        <td>
+          <ng-container *ngIf="editandoUsuario?._id !== usuario._id">
+            <button (click)="mostrarModal(usuario)" class="btn-ver">👁️</button>
+            <button (click)="seleccionarUsuario(usuario)" class="btn-editar">✏️</button>
+            <button (click)="eliminarUsuario(usuario._id)" class="btn-eliminar">🗑️</button>
+          </ng-container>
+
+          <ng-container *ngIf="editandoUsuario?._id === usuario._id">
+            <button (click)="guardarEdicion()" class="btn-guardar">Guardar</button>
+            <button (click)="cancelarEdicion()" class="btn-cancelar">Cancelar</button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #sinUsuarios>
+    <p>No hay usuarios registrados.</p>
+  </ng-template>
+
+  <!-- Modal de Detalles -->
+  <div class="modal" *ngIf="usuarioSeleccionado" (click)="cerrarModal()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <h3>Detalles del Usuario</h3>
+      <p><strong>Matrícula:</strong> {{ usuarioSeleccionado.matricula }}</p>
+      <p><strong>Nombre:</strong> {{ usuarioSeleccionado.nombre }} {{ usuarioSeleccionado.apellido }}</p>
+      <p><strong>Correo:</strong> {{ usuarioSeleccionado.correo }}</p>
+      <p><strong>Teléfono:</strong> {{ usuarioSeleccionado.telefono }}</p>
+      <p><strong>Préstamos Activos:</strong> {{ usuarioSeleccionado.prestamosActivos }}</p>
+      <p><strong>Multas Pendientes:</strong> {{ usuarioSeleccionado.multasPendientes }}</p>
+      <p><strong>Estado:</strong> {{ usuarioSeleccionado.estado }}</p>
+      <p><strong>Fecha Registro:</strong> {{ usuarioSeleccionado.fechaRegistro | date:'dd/MM/yyyy' }}</p>
+
+      <div class="modal-botones">
+        <button class="btn-editar" (click)="editarDesdeModal()">✏️ Editar</button>
+        <button class="btn-eliminar" (click)="eliminarDesdeModal()">🗑️ Eliminar</button>
+        <button (click)="cerrarModal()" class="btn-cerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

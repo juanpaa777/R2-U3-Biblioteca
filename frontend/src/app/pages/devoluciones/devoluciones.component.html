@@ -1,0 +1,61 @@
+<div class="devoluciones-container">
+    <h2>Registrar Devolución</h2>
+  
+    <p class="subtitulo">Busca el préstamo activo que deseas devolver:</p>
+  
+    <!-- Buscador -->
+    <div class="buscador-prestamo">
+      <input 
+        type="text" 
+        [(ngModel)]="terminoBusqueda" 
+        (input)="filtrarPrestamos()"
+        placeholder="Buscar por nombre de usuario o título de libro">
+    </div>
+  
+    <!-- Loader -->
+<div *ngIf="loading" class="spinner-container">
+    <div class="spinner"></div>
+    <p>Procesando devolución...</p>
+  </div>
+  
+  <!-- Tarjetas de préstamos activos (solo si no está loading) -->
+  <div class="tarjetas-prestamos">
+    <div 
+      *ngFor="let prestamo of prestamosFiltrados"
+      [class.fade-out]="prestamosDevueltos.includes(prestamo._id)"
+      [ngClass]="{ 'tarjeta-prestamo': true, 'vencido': estaVencido(prestamo) }">
+      
+      <img *ngIf="prestamo.libroId?.imagenPortada" [src]="prestamo.libroId?.imagenPortada" alt="Portada" class="mini-portada">
+  
+      <div class="info-prestamo">
+        <h3>{{ prestamo.libroId?.titulo }}</h3>
+        <p><strong>Autor:</strong> {{ prestamo.libroId?.autor }}</p>
+        <p><strong>Usuario:</strong> {{ prestamo.usuarioId?.nombre }} {{ prestamo.usuarioId?.apellido }}</p>
+        <p><strong>Prestado:</strong> {{ prestamo.fechaPrestamo | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Vence:</strong> {{ prestamo.fechaVencimiento | date:'dd/MM/yyyy' }}</p>
+  
+        <div [ngClass]="{ 'estado-vigente': !estaVencido(prestamo), 'estado-vencido': estaVencido(prestamo) }">
+          {{ estaVencido(prestamo) ? '⚠️ Vencido' : '✅ Vigente' }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="condicion">Condición de devolución:</label>
+        <select id="condicion" [(ngModel)]="condicion" name="condicion" required>
+          <option value="Bueno">Bueno</option>
+          <option value="Dañado">Dañado</option>
+          <option value="No devuelto">No devuelto</option>
+        </select>
+      </div>
+  
+      <button 
+  (click)="devolverPrestamo(prestamo._id)" 
+  [ngClass]="{ 'boton-verde': !estaVencido(prestamo), 'boton-rojo': estaVencido(prestamo) }">
+  Registrar Devolución
+</button>
+  
+    </div>
+  </div>
+  
+  
+  

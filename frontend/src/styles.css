@@ -1,0 +1,117 @@
+/* Reset y estructura principal */
+html, body {
+    background: #000000; /* Fondo oscuro bonito */
+    margin: 0;
+    padding: 0;
+    color: #d1d5db;
+  }
+  
+  
+  .layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* ✅ Navbar arreglado */
+  .navbar {
+    width: 100%;
+    background: #0a0a0a;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    padding: 0; /* Sin padding aquí */
+  }
+  
+  .navbar-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 30px;
+    height: 60px; /* Altura bonita */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .navbar-logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+  }
+  
+  .navbar-links {
+    display: flex;
+    gap: 25px;
+  }
+  
+  .navbar-links a {
+    color: #d1d5db;
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+    position: relative;
+    padding: 8px 0;
+    transition: color 0.3s;
+  }
+  
+  .navbar-links a:hover,
+  .navbar-links a.active {
+    color: #ffe600;
+  }
+  
+  .navbar-links a.active::after,
+  .navbar-links a:hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: #ffe600;
+    border-radius: 3px;
+  }
+  
+  /* ✅ Separar bien el contenido */
+  .main-content {
+    flex: 1;
+    padding-top: 80px; /* Solo para otras páginas */
+    padding-bottom: 60px;
+    background-color: #fff;
+  }
+  
+  .home-content {
+    flex: 1;
+    padding-top: 0; /* Sin espacio para el video */
+    background-color: #fff;
+  }
+  
+  /* ✅ Footer normal */
+  .footer {
+    width: 100%;
+    background: #0a0a0a;
+    color: #d1d5db;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+  /* Animaciones de aparición */
+.fade-enter {
+    opacity: 0;
+  }
+  
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 0.8s ease;
+  }
+  
+  .fade-leave {
+    opacity: 1;
+  }
+  
+  .fade-leave-active {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  

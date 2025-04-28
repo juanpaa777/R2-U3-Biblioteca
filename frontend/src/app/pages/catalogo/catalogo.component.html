@@ -1,0 +1,79 @@
+<h2 class="titulo-catalogo">Catálogo de Libros</h2>
+
+<!-- Buscador -->
+<div class="buscador-container">
+  <input 
+    type="text" 
+    placeholder="Buscar por título o autor..." 
+    [(ngModel)]="busqueda" 
+    (input)="filtrarLibros()">
+</div>
+
+<div *ngIf="loading" class="loading">Cargando libros...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<!-- Catálogo -->
+<div class="catalogo-grid" *ngIf="!loading && !error && librosFiltrados.length > 0">
+  <div class="libro-card" *ngFor="let libro of librosFiltrados" (click)="verDetalles(libro)">
+    
+    <div class="badge" [ngClass]="{'libro': libro.tipo === 'Libro', 'revista': libro.tipo === 'Revista'}">
+      {{ libro.tipo }}
+    </div>
+
+    <img *ngIf="libro.imagenPortada" [src]="libro.imagenPortada" alt="Portada" class="portada">
+
+    <div class="libro-info">
+      <h3>{{ libro.titulo }}</h3>
+      <p>{{ libro.autor }}</p>
+      <p>{{ libro.ejemplaresDisponibles }} disponibles</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sin resultados -->
+<ng-template #sinLibros>
+  <p>No hay libros disponibles en este momento.</p>
+</ng-template>
+
+<!-- Modal -->
+<div class="modal" *ngIf="libroSeleccionado" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="modal-grid">
+      
+      <!-- Portada -->
+      <div class="imagen-container">
+        <img *ngIf="libroSeleccionado.imagenPortada" [src]="libroSeleccionado.imagenPortada" alt="Portada" class="portada-grande">
+      </div>
+
+      <!-- Detalles -->
+      <div class="detalles-container">
+        <h1 class="titulo">{{ libroSeleccionado.titulo }}</h1>
+        
+        <hr>
+
+        <div class="detalle-item"><strong>Autor:</strong> {{ libroSeleccionado.autor }}</div>
+        <div class="detalle-item"><strong>ISBN:</strong> {{ libroSeleccionado.isbn }}</div>
+        <div class="detalle-item"><strong>Categoría:</strong> {{ libroSeleccionado.categoria }}</div>
+        <div class="detalle-item"><strong>Tipo:</strong> {{ libroSeleccionado.tipo }}</div>
+
+        <hr>
+
+        <div class="detalle-item"><strong>Total:</strong> {{ libroSeleccionado.ejemplaresTotal }}</div>
+        <div class="detalle-item"><strong>Disponibles:</strong> {{ libroSeleccionado.ejemplaresDisponibles }}</div>
+
+        <hr>
+
+        <div class="detalle-item"><strong>Fecha de Publicación:</strong> {{ libroSeleccionado.fechaPublicacion | date: 'dd/MM/yyyy' }}</div>
+        <div class="detalle-item"><strong>Editorial:</strong> {{ libroSeleccionado.editorial }}</div>
+        <div class="detalle-item"><strong>Ubicación:</strong> {{ libroSeleccionado.ubicacion }}</div>
+        <div class="detalle-item"><strong>Estado:</strong> {{ libroSeleccionado.estado }}</div>
+
+        <button (click)="redirigirRegistroPrestamo(libroSeleccionado)">Prestar este libro</button>
+        <button (click)="cerrarModal()">Cerrar</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

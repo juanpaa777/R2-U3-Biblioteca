@@ -1,0 +1,94 @@
+/* CONTENEDOR PRINCIPAL */
+.prestamos-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #111827; /* Fondo oscuro */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    color: #e5e7eb; /* Texto gris claro */
+  }
+  
+  /* TÍTULO */
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    font-weight: bold;
+  }
+  
+  /* GRUPO DE FORMULARIO */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  /* LABELS */
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #d1d5db;
+  }
+  
+  /* INPUTS */
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    background: #1f2937; /* Gris oscuro */
+    color: white;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  input[type="text"]:focus {
+    border-color: #ffe600; /* Acento amarillo */
+    outline: none;
+  }
+  
+  /* BOTÓN SUBMIT */
+  button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: #ffe600; /* Amarillo fuerte */
+    color: #111827; /* Texto oscuro */
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background: #ffd000;
+  }
+  
+  /* BOTÓN DESHABILITADO */
+  button[type="submit"]:disabled {
+    background: #4b5563; /* Gris medio */
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  /* MENSAJE ÉXITO O ERROR */
+  .mensaje {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+    background: #0a0a0a;
+    color: #ffe600;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  /* AVISO DE PRÉSTAMO DESDE CATÁLOGO */
+  .aviso-prestamo {
+    background: #1f2937;
+    padding: 12px 15px;
+    border-left: 4px solid #ffe600;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    color: #d1d5db;
+  }
+  
