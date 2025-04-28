@@ -15,3 +15,4 @@ export const routes: Routes = [
   { path: 'usuarios', component: UsuariosComponent },
   { path: '**', redirectTo: '' } // Cualquier ruta no válida redirige a Home
 ];
+//hola punto
