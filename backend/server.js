@@ -26,6 +26,7 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/prestamos', prestamoRoutes);
 app.use('/api/multas', multaRoutes);
 app.use('/api', loginRoutes);
+app.use('/api/multas', require('./routes/multas.routes'));
 
 // 6. Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {

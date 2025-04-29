@@ -85,7 +85,7 @@
   outline: none;
 }
 
-/* Botones */
+/* Botones del modal */
 .modal-content-login button {
   width: 100%;
   padding: 12px;
@@ -115,16 +115,8 @@
 .modal-content-login .btn-cerrar:hover {
   background: #4b5563;
 }
-.btn-login i {
-  font-size: 1.6rem;
-  color: #ffffff;
-  border-radius: 50%;
-  transition: color 0.3s;
-}
 
-.btn-login:hover i {
-  color: #ffe600;
-}
+/* Botón login */
 .btn-login {
   background: transparent;
   border: none;
@@ -134,4 +126,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn-login i {
+  font-size: 1.6rem;
+  color: #ffffff;
+  border-radius: 50%;
+  transition: color 0.3s;
+}
+
+.btn-login:hover i {
+  color: #ffe600;
 }

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const multaController = require('../controllers/multaController');
+const multasController = require('../controllers/multas.controller');
 
-// Obtener todas las multas
-router.get('/', multaController.getMultas);
-
-// Crear nueva multa (opcional)
-router.post('/', multaController.createMulta);
+// Rutas para multas
+router.get('/', multasController.obtenerMultas);
+router.post('/', multasController.crearMulta);
+router.put('/:id/pagar', multasController.pagarMulta);
 
 module.exports = router;

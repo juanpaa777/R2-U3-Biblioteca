@@ -74,4 +74,27 @@
     color: #9ca3af;
     font-size: 1.1rem;
   }
+  .btn-pagar {
+    padding: 8px 14px;
+    background: #ffe600;
+    color: #111827;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn-pagar:hover {
+    background: #ffd500;
+  }
+  
+  .badge-pagada {
+    background: #28a745;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
   

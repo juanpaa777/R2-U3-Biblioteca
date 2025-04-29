@@ -12,6 +12,7 @@
           <th>Monto</th>
           <th>Pagada</th>
           <th>Fecha de Creación</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +22,17 @@
           <td>$ {{ multa.monto }}</td>
           <td>{{ multa.pagada ? 'Sí' : 'No' }}</td>
           <td>{{ multa.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <ng-container *ngIf="!multa.pagada; else pagadaOK">
+              <button class="btn-pagar" (click)="pagarMulta(multa)" [disabled]="multa.pagando">
+                <span *ngIf="!multa.pagando">💳 Pagar</span>
+                <span *ngIf="multa.pagando">⏳ Procesando...</span>
+              </button>
+            </ng-container>
+            <ng-template #pagadaOK>
+              <span class="badge-pagada">✔ Pagada</span>
+            </ng-template>
+          </td>
         </tr>
       </tbody>
     </table>
