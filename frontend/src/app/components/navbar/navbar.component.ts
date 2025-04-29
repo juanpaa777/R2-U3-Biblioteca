@@ -1,49 +1,39 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule, LoginComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   mostrarLogin = false;
   isLoggedIn = false;
 
-  credenciales = {
-    usuario: '',
-    password: ''
-  };
+  constructor() {}
 
-  constructor(private http: HttpClient) {
-    // ✅ Recuperar estado desde localStorage
+  ngOnInit(): void {
+    // Verificar el estado de inicio de sesión almacenado en localStorage
     const loginGuardado = localStorage.getItem('isLoggedIn');
     this.isLoggedIn = loginGuardado === 'true';
+    
+    // Verificar que Font Awesome esté cargado
+    console.log('Font Awesome disponible:', !!document.querySelector('link[href*="font-awesome"]'));
   }
 
-  login() {
-    if (!this.credenciales.usuario || !this.credenciales.password) {
-      alert('Por favor, ingresa usuario y contraseña');
-      return;
-    }
+  modalLoginCerrado() {
+    this.mostrarLogin = false;
+  }
 
-    this.http.post<any>('http://localhost:5000/api/login', this.credenciales)
-      .subscribe({
-        next: (res) => {
-          this.isLoggedIn = true;
-          this.mostrarLogin = false;
-          localStorage.setItem('isLoggedIn', 'true');
-          alert('✅ Login exitoso');
-        },
-        error: (err) => {
-          alert('❌ Error de login: ' + (err.error.message || 'Error desconocido'));
-        }
-      });
+  loginCompletado() {
+    this.isLoggedIn = true;
+    this.mostrarLogin = false;
+    localStorage.setItem('isLoggedIn', 'true');
   }
 
   cerrarSesion() {

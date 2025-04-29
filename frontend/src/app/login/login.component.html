@@ -1,0 +1,13 @@
+<!-- login.component.html -->
+<div class="modal-login" (click)="cerrar()">
+    <div class="modal-content-login" (click)="$event.stopPropagation()">
+      <h2>Inicio de Sesión</h2>
+  
+      <input type="text" [(ngModel)]="credenciales.usuario" placeholder="Usuario" required>
+      <input type="password" [(ngModel)]="credenciales.password" placeholder="Contraseña" required>
+  
+      <button (click)="login()">Iniciar sesión</button>
+      <button class="btn-cerrar" (click)="cerrar()">Cancelar</button>
+    </div>
+  </div>
+  

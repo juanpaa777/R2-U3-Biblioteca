@@ -1,36 +1,30 @@
-
-
 <nav class="navbar">
   <div class="navbar-left">
     <div class="navbar-logo">📚 BIBLIOTECA</div>
   </div>
 
-  <div class="navbar-links">
-    <a routerLink="/" routerLinkActive="active">Inicio</a>
-    <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
-    <a *ngIf="isLoggedIn" routerLink="/usuarios" routerLinkActive="active">Lectores</a>
-    <a *ngIf="isLoggedIn" routerLink="/devoluciones" routerLinkActive="active">Devoluciones</a>
-    <a *ngIf="isLoggedIn" routerLink="/multas" routerLinkActive="active">Multas</a>
-
-    <!-- Botón login con ícono -->
-    <button class="btn-login" *ngIf="!isLoggedIn" (click)="mostrarLogin = true" aria-label="Iniciar sesión">
-      <i class="fas fa-user-circle"></i>
-    </button>
-
-    <!-- Botón logout -->
-    <button class="btn-login logout-link" *ngIf="isLoggedIn" (click)="cerrarSesion()" aria-label="Cerrar sesión">
-      <i class="fas fa-sign-out-alt"></i>
-    </button>
-  </div>
-
-  <!-- Modal de login -->
-  <div class="modal-login" *ngIf="mostrarLogin">
-    <div class="modal-content-login" (click)="$event.stopPropagation()">
-      <h2>Inicio de Sesión</h2>
-      <input type="text" [(ngModel)]="credenciales.usuario" placeholder="Usuario" required />
-      <input type="password" [(ngModel)]="credenciales.password" placeholder="Contraseña" required />
-      <button (click)="login()">Iniciar sesión</button>
-      <button class="btn-cerrar" (click)="mostrarLogin = false">Cancelar</button>
+  <div class="navbar-center">
+    <div class="navbar-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+      <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+      <a *ngIf="isLoggedIn" routerLink="/usuarios" routerLinkActive="active">Lectores</a>
+      <a *ngIf="isLoggedIn" routerLink="/devoluciones" routerLinkActive="active">Devoluciones</a>
+      <a *ngIf="isLoggedIn" routerLink="/multas" routerLinkActive="active">Multas</a>
     </div>
   </div>
+
+  <div class="navbar-right">
+    <!-- BOTÓN LOGIN -->
+    <button *ngIf="!isLoggedIn" class="btn-login-simple" (click)="mostrarLogin = true">
+      Iniciar Sesión
+    </button>
+
+    <!-- BOTÓN LOGOUT -->
+    <button *ngIf="isLoggedIn" class="btn-logout-simple" (click)="cerrarSesion()">
+      Cerrar Sesión
+    </button>
+  </div>
+
+  <!-- COMPONENTE LOGIN -->
+  <app-login *ngIf="mostrarLogin" (cerrarLogin)="modalLoginCerrado()" (loginExitoso)="loginCompletado()"></app-login>
 </nav>

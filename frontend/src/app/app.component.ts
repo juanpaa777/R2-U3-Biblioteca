@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { FooterComponent } from "./components/footer/footer.component";
-import { NavbarComponent } from "./components/navbar/navbar.component";
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { filter } from 'rxjs/operators'; // Necesario para filtrar solo eventos NavigationEnd
 
 @Component({
   selector: 'app-root',
@@ -14,8 +15,11 @@ export class AppComponent {
   isHome: boolean = false;
 
   constructor(private router: Router) {
-    this.router.events.subscribe(() => {
-      this.isHome = this.router.url === '/';
-    });
+    // Actualizamos isHome solo cuando la navegación termina
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.isHome = this.router.url === '/';
+      });
   }
 }
