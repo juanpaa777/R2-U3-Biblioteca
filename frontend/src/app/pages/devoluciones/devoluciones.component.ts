@@ -14,13 +14,23 @@ import { PrestamoService } from '../../services/prestamo.service';
 })
 export class DevolucionesComponent implements OnInit {
 
-  prestamosActivos: any[] = [];
+  prestamos: any[] = [];
   prestamosFiltrados: any[] = [];
-  terminoBusqueda = '';
-  loading = false;
   prestamosDevueltos: string[] = [];
-  condicion = 'Bueno';
+  audio = new Audio('assets/sounds/ding.mp3');
+  showConfirmModal = false;
+  confirmMessage = '';
 
+  terminoBusqueda = '';
+  fechaDesde: string = '';
+  fechaHasta: string = '';
+  tipoFecha: 'prestamo' | 'devolucion' = 'prestamo';
+  filtroEstado: 'todos' | 'vigente' | 'devuelto' | 'retrasado' = 'todos';
+
+  condicionSeleccionada = 'Bueno';
+  prestamoSeleccionado: any = null;
+
+  loading = false;
   showModal = false;
   modalMessage = '';
   isError = false;
@@ -28,64 +38,99 @@ export class DevolucionesComponent implements OnInit {
   constructor(private prestamoService: PrestamoService) {}
 
   ngOnInit(): void {
-    this.cargarPrestamosActivos();
+    this.cargarTodos();
   }
 
-  cargarPrestamosActivos(): void {
+  cargarTodos(): void {
     this.loading = true;
-    this.prestamoService.getPrestamosActivos().subscribe({
-      next: data => {
-        this.prestamosActivos = data;
-        this.prestamosFiltrados = data;
+    this.prestamoService.getAllPrestamos().subscribe({
+      next: (data) => {
+        this.prestamos = data;
+        this.aplicarFiltros();
         this.loading = false;
       },
-      error: () => {
-        this.loading = false;
-      }
+      error: () => this.loading = false
     });
   }
 
-  filtrarPrestamos(): void {
-    const t = this.terminoBusqueda.toLowerCase().trim();
-    this.prestamosFiltrados = t
-      ? this.prestamosActivos.filter(p =>
-          p.usuarioId?.nombre?.toLowerCase().includes(t) ||
-          p.usuarioId?.apellido?.toLowerCase().includes(t) ||
-          p.libroId?.titulo?.toLowerCase().includes(t)
-        )
-      : [...this.prestamosActivos];
+  aplicarFiltros(): void {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+    const desde = this.fechaDesde ? new Date(this.fechaDesde) : null;
+    const hasta = this.fechaHasta ? new Date(this.fechaHasta) : null;
+  
+    this.prestamosFiltrados = this.prestamos
+      .filter(p => {
+        if (this.filtroEstado === 'todos') return true;
+  
+        if (this.filtroEstado === 'retrasado') {
+          // Sólo mostrar préstamos que estén vigentes y vencidos (no devueltos)
+          return p.estado === 'vigente' && new Date(p.fechaVencimiento) < new Date();
+        }
+  
+        return p.estado === this.filtroEstado;
+      })
+      .filter(p => {
+        if (!termino) return true;
+        return p.usuarioId?.nombre.toLowerCase().includes(termino)
+            || p.usuarioId?.apellido.toLowerCase().includes(termino)
+            || p.libroId?.titulo.toLowerCase().includes(termino);
+      })
+      .filter(p => {
+        const fecha = this.tipoFecha === 'prestamo'
+          ? new Date(p.fechaPrestamo)
+          : (p.fechaDevolucion ? new Date(p.fechaDevolucion) : null);
+        if (!fecha) return false;
+        if (desde && fecha < desde) return false;
+        if (hasta && fecha > hasta) return false;
+        return true;
+      });
+  }
+  
+
+  abrirModalDevolucion(prestamo: any): void {
+    this.prestamoSeleccionado = prestamo;
+    this.condicionSeleccionada = 'Bueno';
+    this.showModal = true;
   }
 
-  devolverPrestamo(prestamoId: string): void {
+  confirmarDevolucion(): void {
+    if (!this.prestamoSeleccionado) return;
+  
     this.loading = true;
-    this.prestamoService.devolverPrestamo(prestamoId, { condicion: this.condicion })
+    this.prestamoService.devolverPrestamo(this.prestamoSeleccionado._id, { condicion: this.condicionSeleccionada })
       .subscribe({
         next: ({ prestamo }) => {
-          this.prestamosDevueltos.push(prestamoId);
-
-          if (prestamo.estado === 'retrasado' && prestamo.multa > 0) {
-            this.modalMessage = `⚠️ Fuera de plazo. Multa: $${prestamo.multa}`;
-          } else {
-            this.modalMessage = '✅ Devolución registrada con éxito';
-          }
-          this.isError = false;
+          this.prestamosDevueltos.push(prestamo._id);
           this.loading = false;
-          this.showModal = true;
+          this.showModal = false;
+  
+          this.confirmMessage = (prestamo.estado === 'retrasado' && prestamo.multa > 0)
+            ? `⚠️ Devolución con multa: $${prestamo.multa}`
+            : `✅ El libro "${prestamo.libroId?.titulo}" fue devuelto exitosamente`;
+  
+          this.audio.play().catch(() => {});
+          this.showConfirmModal = true;
+  
+          this.cargarTodos();
         },
-        error: err => {
+        error: (err) => {
           this.loading = false;
-          this.modalMessage = err.error?.message || '❌ Error al registrar la devolución.';
+          this.showModal = false;
+          this.confirmMessage = err?.error?.message || '❌ Error al registrar la devolución.';
           this.isError = true;
-          this.showModal = true;
+          this.audio.play().catch(() => {});
+          this.showConfirmModal = true;
         }
       });
   }
-
+  
   cerrarModal(): void {
     this.showModal = false;
+    this.prestamoSeleccionado = null;
   }
 
   estaVencido(prestamo: any): boolean {
+    if (prestamo.estado === 'devuelto') return false;
     return new Date() > new Date(prestamo.fechaVencimiento);
   }
 }

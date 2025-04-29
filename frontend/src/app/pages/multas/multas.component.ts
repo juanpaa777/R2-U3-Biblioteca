@@ -10,12 +10,10 @@ import { HttpClientModule } from '@angular/common/http';
   templateUrl: './multas.component.html',
   styleUrls: ['./multas.component.css']
 })
-
 export class MultasComponent implements OnInit {
-
   multas: any[] = [];
-  loading: boolean = true;
-  error: string = '';
+  loading = true;
+  error = '';
 
   constructor(private multaService: MultaService) {}
 
@@ -23,13 +21,13 @@ export class MultasComponent implements OnInit {
     this.cargarMultas();
   }
 
-  cargarMultas() {
+  cargarMultas(): void {
     this.multaService.getMultas().subscribe({
-      next: (data) => {
+      next: data => {
         this.multas = data;
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Error al cargar multas';
         this.loading = false;
       }

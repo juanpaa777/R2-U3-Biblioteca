@@ -3,14 +3,29 @@
   <h2>Registrar Devolución</h2>
   <p class="subtitulo">Busca el préstamo activo que deseas devolver:</p>
 
-  <!-- Buscador -->
-  <div class="buscador-prestamo">
+  <!-- Controles de búsqueda y filtros -->
+  <div class="controles-busqueda">
     <input
       type="text"
       [(ngModel)]="terminoBusqueda"
-      (input)="filtrarPrestamos()"
-      placeholder="Buscar por nombre de usuario o título de libro"
+      (ngModelChange)="aplicarFiltros()"
+      placeholder="🔍 Buscar por usuario o título..."
     />
+
+    <input type="date" [(ngModel)]="fechaDesde" (change)="aplicarFiltros()" />
+    <input type="date" [(ngModel)]="fechaHasta" (change)="aplicarFiltros()" />
+
+    <select [(ngModel)]="tipoFecha" (change)="aplicarFiltros()">
+      <option value="prestamo">Fecha de Préstamo</option>
+      <option value="devolucion">Fecha de Devolución</option>
+    </select>
+
+    <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+      <option value="todos">Todos</option>
+      <option value="vigente">Vigentes</option>
+      <option value="devuelto">Devueltos</option>
+      <option value="retrasado">Retrasados</option>
+    </select>
   </div>
 
   <!-- Loader -->
@@ -27,64 +42,76 @@
       [class.vencido]="estaVencido(prestamo)"
       [class.fade-out]="prestamosDevueltos.includes(prestamo._id)"
     >
-      <img
-        *ngIf="prestamo.libroId?.imagenPortada"
-        [src]="prestamo.libroId.imagenPortada"
-        alt="Portada"
-        class="mini-portada"
-      />
+      <img *ngIf="prestamo.libroId?.imagenPortada"
+           [src]="prestamo.libroId.imagenPortada"
+           alt="Portada"
+           class="mini-portada"/>
 
       <div class="info-prestamo">
         <h3>{{ prestamo.libroId?.titulo }}</h3>
         <p><strong>Autor:</strong> {{ prestamo.libroId?.autor }}</p>
-        <p>
-          <strong>Usuario:</strong>
-          {{ prestamo.usuarioId?.nombre }} {{ prestamo.usuarioId?.apellido }}
-        </p>
-        <p>
-          <strong>Prestado:</strong>
-          {{ prestamo.fechaPrestamo | date: 'dd/MM/yyyy' }}
-        </p>
-        <p>
-          <strong>Vence:</strong>
-          {{ prestamo.fechaVencimiento | date: 'dd/MM/yyyy' }}
-        </p>
-        <div
-          [ngClass]="{
-            'estado-vigente': !estaVencido(prestamo),
-            'estado-vencido': estaVencido(prestamo)
-          }"
-        >
-          {{ estaVencido(prestamo) ? '⚠️ Vencido' : '✅ Vigente' }}
+        <p><strong>Usuario:</strong> {{ prestamo.usuarioId?.nombre }} {{ prestamo.usuarioId?.apellido }}</p>
+        <p><strong>Prestado:</strong> {{ prestamo.fechaPrestamo | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Vence:</strong> {{ prestamo.fechaVencimiento | date: 'dd/MM/yyyy' }}</p>
+
+        <div [ngClass]="{
+          'estado-vigente': prestamo.estado === 'vigente',
+          'estado-devuelto': prestamo.estado === 'devuelto',
+          'estado-vencido': estaVencido(prestamo)
+        }">
+          {{
+            prestamo.estado === 'devuelto' ? '✅ Devuelto' :
+            estaVencido(prestamo) ? '⚠️ Vencido' :
+            '✅ Vigente'
+          }}
         </div>
       </div>
 
+      <!-- Botón SOLO si está vigente -->
+<button *ngIf="prestamo.estado === 'vigente'"
+(click)="abrirModalDevolucion(prestamo)"
+[ngClass]="{
+  'boton-verde': !estaVencido(prestamo),
+  'boton-rojo': estaVencido(prestamo)
+}">
+Registrar Devolución
+</button>
+
+    </div>
+  </div>
+
+  <!-- Modal de devolución -->
+  <div class="modal-exito" *ngIf="showModal">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Registrar Devolución</h2>
+
+      <div class="info-prestamo">
+        <p><strong>Usuario:</strong> {{ prestamoSeleccionado?.usuarioId?.nombre }} {{ prestamoSeleccionado?.usuarioId?.apellido }}</p>
+        <p><strong>Libro:</strong> {{ prestamoSeleccionado?.libroId?.titulo }}</p>
+        <p><strong>Fecha de Préstamo:</strong> {{ prestamoSeleccionado?.fechaPrestamo | date:'dd/MM/yyyy' }}</p>
+      </div>
+
       <div class="form-group">
-        <label for="condicion">Condición de devolución:</label>
-        <select id="condicion" [(ngModel)]="condicion" name="condicion">
+        <label for="estadoLibro">Estado del libro:</label>
+        <select id="estadoLibro" [(ngModel)]="condicionSeleccionada">
           <option>Bueno</option>
           <option>Dañado</option>
           <option>No devuelto</option>
         </select>
       </div>
 
-      <button
-        (click)="devolverPrestamo(prestamo._id)"
-        [ngClass]="{
-          'boton-verde': !estaVencido(prestamo),
-          'boton-rojo': estaVencido(prestamo)
-        }"
-      >
-        Registrar Devolución
-      </button>
+      <div class="botones-modal">
+        <button class="btn-cerrar" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-confirmar" (click)="confirmarDevolucion()">Registrar Devolución</button>
+      </div>
     </div>
   </div>
-
- <!-- Modal de resultado -->
-<div class="modal-exito" *ngIf="showModal">
+  <!-- Modal de Confirmación con sonido -->
+<div class="modal-exito" *ngIf="showConfirmModal" (click)="showConfirmModal = false">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <h3 [ngClass]="{ 'error-text': isError }">{{ modalMessage }}</h3>
-    <button class="btn-cerrar" (click)="cerrarModal()">Cerrar</button>
+    <h3>✔️ Confirmación</h3>
+    <p>{{ confirmMessage }}</p>
+    <button (click)="showConfirmModal = false">Cerrar</button>
   </div>
 </div>
 

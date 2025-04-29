@@ -18,12 +18,14 @@ const libroRoutes = require('./routes/libros.routes');
 const usuarioRoutes = require('./routes/usuarios.routes');
 const prestamoRoutes = require('./routes/prestamos.routes');
 const multaRoutes = require('./routes/multas.routes');
+const loginRoutes = require('./routes/loginRoutes');
 
 // 5. Usar rutas
 app.use('/api/libros', libroRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/prestamos', prestamoRoutes);
 app.use('/api/multas', multaRoutes);
+app.use('/api', loginRoutes);
 
 // 6. Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {

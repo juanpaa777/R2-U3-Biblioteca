@@ -1,14 +1,29 @@
 <h2 class="titulo-catalogo">Catálogo de Libros</h2>
 
-<!-- Buscador -->
-<div class="buscador-container">
+<!-- Buscador y Filtros -->
+<div class="filtros-container">
   <input 
     type="text" 
-    placeholder="Buscar por título o autor..." 
+    placeholder="🔍 Buscar por título o autor..." 
     [(ngModel)]="busqueda" 
     (input)="filtrarLibros()">
+
+  <select [(ngModel)]="filtroTipo" (change)="filtrarLibros()">
+    <option value="Todos">Todos los Tipos</option>
+    <option value="Libro">Libros</option>
+    <option value="Revista">Revistas</option>
+  </select>
+
+  <select [(ngModel)]="filtroCategoria" (change)="filtrarLibros()">
+    <option value="Todos">Todas las Categorías</option>
+    <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+  </select>
+
+  <input type="number" [(ngModel)]="anioDesde" (input)="filtrarLibros()" placeholder="📅 Año desde">
+  <input type="number" [(ngModel)]="anioHasta" (input)="filtrarLibros()" placeholder="📅 Año hasta">
 </div>
 
+<!-- Loader o Error -->
 <div *ngIf="loading" class="loading">Cargando libros...</div>
 <div *ngIf="error" class="error">{{ error }}</div>
 
@@ -30,17 +45,11 @@
   </div>
 </div>
 
-<!-- Sin resultados -->
-<ng-template #sinLibros>
-  <p>No hay libros disponibles en este momento.</p>
-</ng-template>
-
-<!-- Modal -->
+<!-- Modal de Detalles del Libro -->
 <div class="modal" *ngIf="libroSeleccionado" (click)="cerrarModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-
     <div class="modal-grid">
-      
+
       <!-- Portada -->
       <div class="imagen-container">
         <img *ngIf="libroSeleccionado.imagenPortada" [src]="libroSeleccionado.imagenPortada" alt="Portada" class="portada-grande">
@@ -49,7 +58,6 @@
       <!-- Detalles -->
       <div class="detalles-container">
         <h1 class="titulo">{{ libroSeleccionado.titulo }}</h1>
-        
         <hr>
 
         <div class="detalle-item"><strong>Autor:</strong> {{ libroSeleccionado.autor }}</div>
@@ -69,11 +77,24 @@
         <div class="detalle-item"><strong>Ubicación:</strong> {{ libroSeleccionado.ubicacion }}</div>
         <div class="detalle-item"><strong>Estado:</strong> {{ libroSeleccionado.estado }}</div>
 
-        <button (click)="redirigirRegistroPrestamo(libroSeleccionado)">Prestar este libro</button>
+        <hr>
+
+        <button (click)="abrirModalPrestamos()">Solicitar Préstamo</button>
         <button (click)="cerrarModal()">Cerrar</button>
       </div>
-
     </div>
+  </div>
+</div>
 
+<!-- Modal para Solicitar Préstamo -->
+<div class="modal" *ngIf="mostrarModalPrestamos" (click)="cerrarModalPrestamos()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <app-prestamos 
+      [isbnInput]="libroSeleccionado?.isbn" 
+      [tituloInput]="libroSeleccionado?.titulo"
+      (prestamoExitoso)="cerrarModalPrestamos()">
+    </app-prestamos>
+
+    <button (click)="cerrarModalPrestamos()">Cerrar</button>
   </div>
 </div>

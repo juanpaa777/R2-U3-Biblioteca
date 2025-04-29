@@ -1,77 +1,96 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Necesario para [(ngModel)]
-import { HttpClientModule } from '@angular/common/http';
-import { LibroService } from '../../services/libro.service';
-import { Router } from '@angular/router';
+  import { Component, OnInit } from '@angular/core';
+  import { CommonModule } from '@angular/common';
+  import { FormsModule } from '@angular/forms';
+  import { HttpClientModule } from '@angular/common/http';
+  import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-catalogo',
-  standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
-  templateUrl: './catalogo.component.html',
-  styleUrls: ['./catalogo.component.css']
-})
-export class CatalogoComponent implements OnInit {
+  import { LibroService } from '../../services/libro.service';
+  import { PrestamosComponent } from '../prestamos/prestamos.component';
 
-  libros: any[] = [];
-  librosFiltrados: any[] = [];
-  loading: boolean = false;
-  error: string = '';
-  busqueda: string = '';
 
-  libroSeleccionado: any = null;
+  @Component({
+    selector: 'app-catalogo',
+    standalone: true,
+    imports: [CommonModule, FormsModule, HttpClientModule, PrestamosComponent],
+    templateUrl: './catalogo.component.html',
+    styleUrls: ['./catalogo.component.css']
+  })
+  export class CatalogoComponent implements OnInit {
 
-  constructor(private libroService: LibroService,  private router: Router) {}
+    libros: any[] = [];
+    librosFiltrados: any[] = [];
+    loading: boolean = false;
+    error: string = '';
+    busqueda: string = '';
+    filtroTipo: string = 'Todos';
+    filtroCategoria: string = 'Todos';
+    anioDesde: string = '';
+    anioHasta: string = '';
+    categorias: string[] = [];
 
-  ngOnInit(): void {
-    this.obtenerLibrosDisponibles();
-  }
+    libroSeleccionado: any = null;
+    mostrarModalPrestamos: boolean = false; // Para mostrar PrestamosComponent en modal
+    // 🔥🔥 Variables NUEVAS que debes agregar
+ 
+    filtroAnioDesde: number | null = null;
+    filtroAnioHasta: number | null = null;
+    categoriasDisponibles: string[] = [];  // <<-- Se llena dinámicamente
 
-  obtenerLibrosDisponibles() {
-    this.loading = true;
-    this.error = '';
-    this.libroService.getTodosLosLibros().subscribe({
-      next: (data) => {
-        this.libros = data;
-        this.librosFiltrados = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error cargando libros', err);
-        this.error = 'Error al cargar libros. Por favor, inténtalo nuevamente más tarde.';
-        this.loading = false;
-      }
-    });
-  }
+    constructor(private libroService: LibroService, private router: Router) {}
+
+    ngOnInit(): void {
+      this.obtenerLibrosDisponibles();
+    }
   
-
-  filtrarLibros() {
-    const term = this.busqueda.trim().toLowerCase();
-    if (term === '') {
-      this.librosFiltrados = this.libros; // Mostrar todos si no hay búsqueda
-    } else {
-      this.librosFiltrados = this.libros.filter(libro =>
-        libro.titulo.toLowerCase().includes(term) ||
-        libro.autor.toLowerCase().includes(term)
-      );
+    obtenerLibrosDisponibles() {
+      this.loading = true;
+      this.libroService.getTodosLosLibros().subscribe({
+        next: data => {
+          this.libros = data;
+          this.categorias = [...new Set(data.map(lib => lib.categoria))];
+          this.filtrarLibros();
+          this.loading = false;
+        },
+        error: err => {
+          this.error = 'Error al cargar libros';
+          this.loading = false;
+        }
+      });
+    }
+  
+    filtrarLibros() {
+      const term = this.busqueda.toLowerCase();
+      const desde = this.anioDesde ? parseInt(this.anioDesde) : null;
+      const hasta = this.anioHasta ? parseInt(this.anioHasta) : null;
+  
+      this.librosFiltrados = this.libros.filter(libro => {
+        const coincideBusqueda = libro.titulo.toLowerCase().includes(term) ||
+                                 libro.autor.toLowerCase().includes(term);
+  
+        const coincideTipo = this.filtroTipo === 'Todos' || libro.tipo === this.filtroTipo;
+        const coincideCategoria = this.filtroCategoria === 'Todos' || libro.categoria === this.filtroCategoria;
+  
+        const anio = new Date(libro.fechaPublicacion).getFullYear();
+        const coincideFecha = (!desde || anio >= desde) && (!hasta || anio <= hasta);
+  
+        return coincideBusqueda && coincideTipo && coincideCategoria && coincideFecha;
+      });
+    }
+  
+    verDetalles(libro: any) {
+      this.libroSeleccionado = libro;
+    }
+  
+    cerrarModal() {
+      this.libroSeleccionado = null;
+    }
+  
+    abrirModalPrestamos() {
+      this.mostrarModalPrestamos = true;
+    }
+  
+    cerrarModalPrestamos() {
+      this.mostrarModalPrestamos = false;
+      this.libroSeleccionado = null;
     }
   }
-
-  verDetalles(libro: any) {
-    this.libroSeleccionado = libro;
-  }
-
-  cerrarModal() {
-    this.libroSeleccionado = null;
-  }
-  
-  redirigirRegistroPrestamo(libro: any) {
-    this.router.navigate(['/prestamos'], { 
-      queryParams: { 
-        isbn: libro.isbn,
-        titulo: libro.titulo
-      } 
-    });
-  }
-}

@@ -1,15 +1,34 @@
 <nav class="navbar">
   <div class="navbar-left">
-    <div class="navbar-logo">Biblioteca</div>
+    <div class="navbar-logo">📚 BIBLIOTECA</div>
   </div>
 
   <div class="navbar-links">
     <a routerLink="/" routerLinkActive="active">Inicio</a>
-    <a routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
     <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
-    <a routerLink="/prestamos" routerLinkActive="active">Préstamos</a>
-    <a routerLink="/devoluciones" routerLinkActive="active">Devoluciones</a>
-    <a routerLink="/multas" routerLinkActive="active">Multas</a> <!-- 👉 Nuevo enlace -->
+    <a *ngIf="isLoggedIn" routerLink="/usuarios" routerLinkActive="active">Lectores</a>
+    <a *ngIf="isLoggedIn" routerLink="/devoluciones" routerLinkActive="active">Devoluciones</a>
+    <a *ngIf="isLoggedIn" routerLink="/multas" routerLinkActive="active">Multas</a>
+
+    <!-- Botón login con ícono -->
+    <button class="btn-login" (click)="mostrarLogin = true" *ngIf="!isLoggedIn">
+      <i class="fas fa-user-circle"></i>
+    </button>
+
+    <!-- Botón logout -->
+    <button class="btn-login logout-link" (click)="cerrarSesion()" *ngIf="isLoggedIn">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
   </div>
-  
+
+  <!-- Modal de login -->
+  <div class="modal-login" *ngIf="mostrarLogin" (click)="mostrarLogin = false">
+    <div class="modal-content-login" (click)="$event.stopPropagation()">
+      <h2>Inicio de Sesión</h2>
+      <input type="text" [(ngModel)]="credenciales.usuario" placeholder="Usuario">
+      <input type="password" [(ngModel)]="credenciales.password" placeholder="Contraseña">
+      <button (click)="login()">Iniciar sesión</button>
+      <button class="btn-cerrar" (click)="mostrarLogin = false">Cancelar</button>
+    </div>
+  </div>
 </nav>

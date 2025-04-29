@@ -1,61 +1,137 @@
+/* Navbar principal */
 .navbar {
-    width: 100%;
-    background: #0a0a0a;
-    padding: 15px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Logo (solo "Biblioteca") */
-  .navbar-left {
-    display: flex;
-    align-items: center;
-    margin-right: auto; /* 🔥 Esto lo empuja totalmente a la izquierda */
-  }
-  
-  .navbar-logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  
-  /* Botones */
-  .navbar-links {
-    display: flex;
-    gap: 30px;
-  }
-  
-  .navbar-links a {
-    color: #d1d5db;
-    text-decoration: none;
-    font-weight: 600;
-    position: relative;
-    padding-bottom: 4px;
-    transition: color 0.3s;
-  }
-  
-  /* Hover y Activo */
-  .navbar-links a:hover,
-  .navbar-links a.active {
-    color: #ffe600;
-  }
-  
-  .navbar-links a.active::after,
-  .navbar-links a:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: #ffe600;
-    border-radius: 2px;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #000000;
+  padding: 14px 32px;
+  color: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.navbar-links a,
+.btn-login,
+.logout-link {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover,
+.btn-login:hover,
+.logout-link:hover {
+  color: #ffe600;
+}
+
+/* Modal login fondo */
+.modal-login {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Contenedor login */
+.modal-content-login {
+  background: #1f1f1f;
+  padding: 32px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modal-content-login h2 {
+  color: white;
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+}
+
+.modal-content-login input {
+  width: 100%;
+  padding: 12px;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.modal-content-login input:focus {
+  border-color: #ffe600;
+  outline: none;
+}
+
+/* Botones */
+.modal-content-login button {
+  width: 100%;
+  padding: 12px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  margin-top: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal-content-login button:first-of-type {
+  background: #ffe600;
+  color: #111827;
+}
+
+.modal-content-login button:first-of-type:hover {
+  background: #ffd700;
+}
+
+.modal-content-login .btn-cerrar {
+  background: #374151;
+  color: white;
+}
+
+.modal-content-login .btn-cerrar:hover {
+  background: #4b5563;
+}
+.btn-login i {
+  font-size: 1.6rem;
+  color: #ffffff;
+  border-radius: 50%;
+  transition: color 0.3s;
+}
+
+.btn-login:hover i {
+  color: #ffe600;
+}
+.btn-login {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
