@@ -1,0 +1,29 @@
+<h2>Multas Registradas</h2>
+
+<div *ngIf="loading">Cargando multas...</div>
+<div *ngIf="error">{{ error }}</div>
+
+<table *ngIf="!loading && !error && multas.length > 0">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Libro</th>
+      <th>Monto</th>
+      <th>Pagada</th>
+      <th>Fecha de Creación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let multa of multas">
+      <td>{{ multa.usuarioId?.nombre }} {{ multa.usuarioId?.apellido }}</td>
+      <td>{{ multa.prestamoId?.libroId?.titulo || 'N/A' }}</td>
+      <td>${{ multa.monto }}</td>
+      <td>{{ multa.pagada ? 'Sí' : 'No' }}</td>
+      <td>{{ multa.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="!loading && !error && multas.length === 0">
+  <p>No hay multas registradas actualmente.</p>
+</div>

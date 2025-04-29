@@ -1,27 +1,61 @@
 <div class="prestamos-container">
-    <h2>Registrar un Préstamo</h2>
-  <!-- Mostrar aviso si viene de catálogo -->
-<div *ngIf="tituloLibro" class="aviso-prestamo">
+  <h2>Registrar un Préstamo</h2>
+
+  <div *ngIf="tituloLibro" class="aviso-prestamo">
     <p>📚 Registrando préstamo para: <strong>{{ tituloLibro }}</strong></p>
   </div>
-    <form (ngSubmit)="registrarPrestamo()" #prestamoForm="ngForm">
-  
-      <div class="form-group">
-        <label for="matricula">Matrícula del Usuario:</label>
-        <input type="text" id="matricula" name="matricula" [(ngModel)]="matricula" required>
-      </div>
-  
-      <div class="form-group">
-        <label>ISBN del libro:</label>
-        <input type="text" [(ngModel)]="isbn" name="isbn" [readonly]="isbnBloqueado" required>
 
+  <form (ngSubmit)="registrarPrestamo()" #prestamoForm="ngForm">
+    <div class="form-group">
+      <label for="usuario">Buscar Usuario:</label>
+      <input
+        type="text"
+        id="usuario"
+        name="usuario"
+        [(ngModel)]="terminoBusqueda"
+        (input)="buscarSugerencias()"
+        autocomplete="off"
+        placeholder="Escribe nombre o matrícula..."
+        required
+      />
+
+      <div class="sugerencias" *ngIf="sugerencias.length > 0">
+        <div
+          *ngFor="let sugerencia of sugerencias"
+          class="sugerencia-item"
+          (click)="seleccionarUsuario(sugerencia)"
+        >
+          {{ sugerencia.nombre }} {{ sugerencia.apellido }} — {{ sugerencia.matricula }}
+        </div>
       </div>
-  
-      <button type="submit" [disabled]="!prestamoForm.valid">Registrar Préstamo</button>
-    </form>
-  
-    <div *ngIf="mensaje" class="mensaje">
+    </div>
+
+    <div class="form-group">
+      <label>ISBN del libro:</label>
+      <input
+        type="text"
+        [(ngModel)]="isbn"
+        name="isbn"
+        [readonly]="isbnBloqueado"
+        required
+      />
+    </div>
+
+    <button type="submit" [disabled]="!prestamoForm.valid || !matricula">
+      Registrar Préstamo
+    </button>
+
+    <div *ngIf="mensaje && !mensajeExito" class="mensaje">
       {{ mensaje }}
     </div>
+  </form>
+</div>
+
+<!-- Modal de Éxito: fuera de .prestamos-container -->
+<div *ngIf="mensajeExito" class="modal-exito" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>¡Éxito!</h3>
+    <p>{{ mensaje }}</p>
+    <button (click)="cerrarModal()">Cerrar</button>
   </div>
-  
+</div>

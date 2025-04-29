@@ -1,6 +1,7 @@
 const Prestamo = require('../models/Prestamo');
 const Usuario = require('../models/Usuario');
 const Libro = require('../models/Libro');
+const Multa = require('../models/Multa');
 
 // Registrar un nuevo préstamo
 exports.createPrestamo = async (req, res) => {
@@ -69,6 +70,19 @@ exports.devolverPrestamo = async (req, res) => {
     prestamo.condicion = condicion || 'Bueno'; 
     await prestamo.save();
 
+    // 👉 Aquí sí: si hubo retraso, crear multa
+    if (diasRetraso > 0) {
+      const nuevaMulta = new Multa({
+        prestamoId: prestamo._id,
+        usuarioId: prestamo.usuarioId._id,
+        monto: prestamo.multa,
+        fechaCreacion: new Date(),
+        pagada: false,
+        fechaPago: null
+      });
+      await nuevaMulta.save();
+    }
+
     // Actualizar usuario
     const usuario = await Usuario.findById(prestamo.usuarioId._id);
     usuario.prestamosActivos -= 1;
@@ -85,13 +99,23 @@ exports.devolverPrestamo = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-  
 };
 
 // Obtener préstamos vigentes
 exports.getPrestamosActivos = async (req, res) => {
   try {
     const prestamos = await Prestamo.find({ estado: 'vigente' })
+      .populate('usuarioId')
+      .populate('libroId');
+    res.json(prestamos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Obtener todos los préstamos
+exports.getAllPrestamos = async (req, res) => {
+  try {
+    const prestamos = await Prestamo.find()
       .populate('usuarioId')
       .populate('libroId');
     res.json(prestamos);

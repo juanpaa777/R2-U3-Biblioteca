@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const prestamoSchema = new mongoose.Schema({
   usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
   libroId: { type: mongoose.Schema.Types.ObjectId, ref: 'Libro', required: true },

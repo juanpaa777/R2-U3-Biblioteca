@@ -8,4 +8,8 @@ import { RouterModule } from '@angular/router'; // <-- IMPORTANTE
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent { }
+
+export class NavbarComponent { 
+  toastMessage = '';
+  isErrorToast = false;
+}
